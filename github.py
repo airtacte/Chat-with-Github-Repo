@@ -18,12 +18,19 @@ def clone_repository(repo_url, local_path):
 def load_docs(root_dir):
     docs = []
     for dirpath, dirnames, filenames in os.walk(root_dir):
+        if "Contracts" not in dirpath and "Client" not in dirpath:
+            continue
         for file in filenames:
+            if file not in ["DeploySteeloToken.js", "HardHat.config.js", "Package.json", "safeMultisig.js"]:
+                continue
             try:
-                loader = TextLoader(os.path.join(
-                    dirpath, file), encoding='utf-8')
+                loader = TextLoader(os.path.join(dirpath, file), encoding='utf-8')
                 docs.extend(loader.load_and_split())
+            except UnicodeDecodeError:
+                print(f"Skipping file {file}: could not decode as utf-8")
+                pass
             except Exception as e:
+                print(f"Error loading file {file}: {str(e)}")
                 pass
     return docs
 
@@ -42,7 +49,6 @@ def main(repo_url, root_dir, repo_name, username):
     db = DeepLake(
         dataset_path=f"hub://{username}/{repo_name}", embedding_function=embeddings)
     db.add_documents(texts)
-
 
 if __name__ == "__main__":
     repo_url = os.environ.get('REPO_URL')
