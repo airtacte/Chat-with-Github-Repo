@@ -50,7 +50,7 @@ def generate_response(prompt):
 
 def get_text():
     # Create a Streamlit input field and return the user's input
-    input_text = st.text_input("", key="input")
+    input_text = st.text_input("Enter your question:", key="input")
     return input_text
 
 
