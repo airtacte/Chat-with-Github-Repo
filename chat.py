@@ -16,7 +16,6 @@ from langchain.docstore.document import Document
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 from langchain.chains import RetrievalQA
-import streamlit as st
 from langchain.document_loaders.csv_loader import CSVLoader
 from tempfile import NamedTemporaryFile
 import tempfile
@@ -86,6 +85,10 @@ if user_input:
     output = search_db(user_input)
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
+
+# Add this line before line 91 or the line where the KeyError is raised
+if "generated" not in st.session_state:
+    st.session_state["generated"] = False
 
 # If there are generated responses, display the conversation using Streamlit messages
 if st.session_state['generated']:
